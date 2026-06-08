@@ -13,8 +13,6 @@ def ft_load(path: str) -> np.ndarray:
     try:
         with Image.open(path) as img:
             img = img.convert('RGB')
-            if img.format != "JPEG":
-                raise ValueError("unsupported image format")
             array = np.array(img)
             print(f"The shape of image is: {array.shape}")
             return array

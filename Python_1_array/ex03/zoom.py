@@ -12,7 +12,7 @@ def zoom_image(image: np.ndarray) -> np.ndarray:
     if image.shape[0] < 500 or image.shape[1] < 850:
         raise ValueError("image is too small for the selected zoom area.")
 
-    return image[100:500, 450:850, 0]
+    return image[100:500, 450:850, 0:1]
 
 
 def main():
@@ -30,7 +30,7 @@ def main():
         print(f"New shape after slicing: {zoomed.shape}")
         print(zoomed)
 
-        plt.imshow(zoomed, cmap="gray")
+        plt.imshow(zoomed, cmap='gray')
         plt.show()
 
     except Exception as error:

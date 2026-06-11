@@ -31,6 +31,7 @@ def main():
         print(zoomed)
 
         plt.imshow(zoomed, cmap='gray')
+        plt.tick_params(axis='both', labelsize=20)
         plt.show()
 
     except Exception as error:

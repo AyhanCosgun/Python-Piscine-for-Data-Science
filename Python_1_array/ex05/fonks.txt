@@ -1,0 +1,107 @@
+ft_invert
+
+Renkleri tersine çevirir:
+
+new = 255 - old
+Örnek:
+
+[19, 42, 83] -> [236, 213, 172]
+İzinli operatörler:
+
+=, +, -, *
+Bu işlem uygun.
+
+ft_red
+
+Sadece kırmızı kanal kalsın, yeşil ve mavi sıfırlansın:
+
+[R, G, B] -> [R, 0, 0]
+İzinli operatörler:
+
+=, *
+Bunu mask ile yapabiliriz:
+
+array * [1, 0, 0]
+Bu sadece çarpma kullanır.
+
+ft_green
+
+Sadece yeşil kanal kalsın:
+
+[R, G, B] -> [0, G, 0]
+İzinli operatörler:
+
+=, -
+Çarpma kullanmadan yapmak lazım. Mesela kopya array alıp red ve blue kanallarını kendisinden çıkarabiliriz:
+
+new[:, :, 0] = new[:, :, 0] - new[:, :, 0]
+new[:, :, 2] = new[:, :, 2] - new[:, :, 2]
+Böylece red ve blue sıfırlanır.
+
+ft_blue
+
+Sadece mavi kanal kalsın:
+
+[R, G, B] -> [0, 0, B]
+İzinli operatör:
+
+=
+Yani en kısıtlısı bu. Burada direkt assignment ile kanalları sıfırlamak gerekir:
+
+new[:, :, 0] = 0
+new[:, :, 1] = 0
+ft_grey
+
+Grayscale yapar. RGB’den gri değer üretir. Basit yöntem:
+
+grey = (R + G + B) / 3
+Ama izinli operatör sadece:
+
+=, /
+Bu yüzden + kullanmak riskli. Burada subject muhtemelen NumPy/Python yardımcı fonksiyonlarına izin veriyor olabilir ama operatör kısıtı yüzünden dikkatli olmak lazım.
+
+Daha güvenli düşünce:
+
+grey = np.mean(array, axis=2)
+Ama bu da içeride toplama yapıyor; kodda + operatörü kullanmuyoruz. 42 değerlendirmesinde genelde kaynak kodda kullanılan operatöre bakılır, iç implementasyona değil.
+
+Sonra 3 kanala geri yaymak gerekir çünkü shape aynı kalmalı:
+
+new[:, :, 0] = grey
+new[:, :, 1] = grey
+new[:, :, 2] = grey
+Shape yine (h, w, 3) olur.
+
+Shape Koruma Püf Noktası
+Bu exercise’da her fonksiyonun sonunda şunu korumamız önemli:
+
+result.shape == array.shape
+Örneğin ft_grey yanlışlıkla (257, 450) döndürürse shape değişmiş olur. Subject “while keeping the image shape the same” dediği için bu hatalı olur.
+
+Yani grayscale bile RGB shape’inde dönmeli:
+
+[R, G, B] -> [grey, grey, grey]
+
+Nasıl Yapardık?
+Bence plan şöyle:
+
+1. ex05/load_image.py içine ft_load yaz
+2. ex05/pimp_image.py içine 5 filtre fonksiyonunu yaz
+3. Ortak validate helper yaz
+4. Ortak display helper yaz
+5. Her filtre input’u copy’lasın
+6. Shape aynı kalsın
+7. Her fonksiyon result’u return etsin
+8. Fonksiyon docstring’leri olsun
+9. Tester ile shape ve display kontrolü yap
+Benim tercih edeceğim filtre davranışları:
+
+ft_invert -> 255 - array
+ft_red    -> array * [1, 0, 0]
+ft_green  -> red ve blue kanallarını subtraction ile sıfırla
+ft_blue   -> red ve green kanallarını assignment ile sıfırla
+ft_grey   -> np.mean ile grey hesapla, 3 kanala assign et
+Ex05’in özü şu: artık image array’ini sadece kesmiyoruz veya transpose etmiyoruz; RGB kanallarını bilinçli biçimde manipüle ediyoruz. En önemli iki savunma cümlesi de şu olur:
+
+Her piksel [R, G, B] üçlüsüdür.
+Filtreler bu kanallar üzerinde çalışır ama image shape’i değişmez.

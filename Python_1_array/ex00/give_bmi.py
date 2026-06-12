@@ -27,7 +27,7 @@ def give_bmi(height: list[int | float],
 
 
 def apply_limit(bmi: list[int | float], limit: int) -> list[bool]:
-    """Retruns a list of boolean values
+    """Returns a list of boolean values
     indicating whether each BMI is above the limit."""
     if not isinstance(bmi, list):
         print("Error: bmi must be a list.")

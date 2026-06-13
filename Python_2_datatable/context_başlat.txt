@@ -1,0 +1,4 @@
+Önce PYTHON_2_DATATABLE_CONTEXT_TR.md dosyasını proje bağlamı olarak
+ayrıntılı biçimde oku. Ardından mevcut depo dosyalarını incele.
+Python_2_Datatable.pdf nihai otorite olsun ve çalışmaya bu kurallara
+göre devam et.

@@ -1,0 +1,98 @@
+Ecole 42 kampüsündeki bilgisayarlarda subject teki  "You must use the Python 3.10 version" şartını nasıl sağlatabilirim ? Sudo yetkim yok orda.
+
+
+Sudo gerekmez. Önce kampüs bilgisayarında Python 3.10’un zaten bulunup bulunmadığını kontrol et:
+python3.10 --version
+python3 --version
+which python3.10
+Çıktı örneğin şuysa şart sağlanır:
+Python 3.10.x
+3.10.0 olmak zorunda değil; 3.10.12, 3.10.20 gibi herhangi bir 3.10.x uygundur.
+Python 3.10 Varsa
+Doğrudan:
+python3.10 ex00/tester.py
+Paketleri kullanıcı hesabına kur:
+python3.10 -m pip install --user numpy pillow matplotlib flake8
+Kontrol:
+python3.10 -c "import sys; print(sys.version)"
+python3.10 -m flake8 ex00/give_bmi.py
+İstersen alias:
+alias python=python3.10
+alias pip="python3.10 -m pip"
+alias norminette="python3.10 -m flake8"
+Alias sadece mevcut terminalde geçerli olur. Kalıcı olması için ~/.bashrc içine eklenebilir.
+Virtual Environment Kullanacaksan
+Önemli nokta: venv kendi başına Python sürümünü değiştirmez. Hangi Python ile oluşturursan o sürümü kullanır. Resmî Python dokümanı da bunu açıkça belirtiyor. Python venv
+python3.10 -m venv ~/goinfre/python-ds-env
+source ~/goinfre/python-ds-env/bin/activate
+python -m pip install numpy pillow matplotlib flake8
+python --version
+Son çıktı Python 3.10.x olmalıdır.
+42’de home alanı sınırlıysa environment’ı goinfre altında tutmak mantıklıdır. .venv veya environment dosyalarını Git’e gönderme.
+Python 3.10 Yoksa
+Önce kampüs makinesinde şu araçları kontrol et:
+pyenv --version
+module avail 2>/dev/null | grep -i python
+ls /usr/bin/python3*
+pyenv varsa:
+pyenv install --list | grep '  3.10'
+pyenv install 3.10.20
+cd Python_1_array
+pyenv local 3.10.20
+python --version
+pyenv local, projeye .python-version dosyası ekler. Bu dosyayı turn-in dışı tutman daha güvenli olabilir.
+Pyenv sudo istemeden $HOME/.pyenv altında farklı Python sürümleri yönetebilir; ancak Python’ı kaynak koddan derlediği için sistemde gerekli build bağımlılıklarının önceden bulunması gerekir. pyenv
+Pyenv de Yoksa
+Python kaynak kodunu kullanıcı dizinine kurabilirsin:
+curl -O https://www.python.org/ftp/python/3.10.20/Python-3.10.20.tgz
+tar -xf Python-3.10.20.tgz
+cd Python-3.10.20
+
+./configure --prefix="$HOME/goinfre/python310"
+make -j2
+make install
+Sonra:
+export PATH="$HOME/goinfre/python310/bin:$PATH"
+python3.10 --version
+Python resmi olarak --prefix="$HOME/..." ile sudo olmadan kullanıcı dizinine kurulmayı destekliyor. Python configure
+Fakat kampüs bilgisayarında derleme bağımlılıkları eksikse bu yöntem başarısız olabilir. En olası ve kolay senaryo, python3.10 komutunun zaten kurulu olmasıdır.
+Değerlendirme öncesi kesin kontrol:
+python3.10 --version
+python3.10 -c "import numpy, PIL, matplotlib; print('dependencies OK')"
+python3.10 -m flake8 ex00/give_bmi.py ex01/array2D.py
+Programlarını özellikle python3.10 ile çalıştırırsan subject şartını açıkça sağlamış olursun.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+Full access
+
+5.5High
+
+
+
+
+
+
+
+
+Work locally

@@ -6,7 +6,7 @@ list = [1, 2, "ali", True, 5]
 # print(list[::2])  # Output: [1, 3, 5]
 
 # print(list[1:4:2])  # Output: [2, 4]
-# print(list[3::-2])  # Output: [5, 4, 3] 
+print(list[3::-2])  # Output: [5, 4, 3] 
 # print(list[::-1])  # Output: [5, 4, 3, 2, 1]    
 
 # print(list[4:2])  # Output: []
@@ -34,4 +34,4 @@ list = [1, 2, "ali", True, 5]
 # print(matrix[0:2, 1:4])  # Output: [[11 12 13]
 #                             #      [21 22 23]]
 
-print(list[1:4])  # Output: [2, 'ali', True]
+#print(list[1:4])  # Output: [2, 'ali', True]

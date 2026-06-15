@@ -1,5 +1,6 @@
 import matplotlib.pyplot as plt
 import numpy as np
+from pathlib import Path
 
 # lines = plt.plot(
 #     [1,2,3],[4,5,6], marker='o', mfc='red', mec='green', ms=15, lw=8
@@ -21,3 +22,9 @@ plt.plot(x, y2, label="cos(x)")
 
 plt.legend(loc='upper center')
 plt.show()
+
+print(__file__)
+script_path = Path(__file__)
+print(script_path)
+print(script_path.resolve())
+print(script_path.parent)

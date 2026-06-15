@@ -13,22 +13,22 @@ df = pd.read_csv("data_table.csv")
 # print(f"Dtypes:\n{df.dtypes}")
 # print(f"First few rows:\n{df.head()}")
 
-row = df[df["country"] == "Albania"]
+# row = df[df["country"] == "Albania"]
 
-# print(f"Rows for Albania:\n{row} \n")
-print(f"row.columns[1:]: {type(row.columns[1:])} \n {row.columns[1:].astype(int)} \n")
-
-
-print(f"row.iloc[0]: {type(row.iloc[0])} \n {row.iloc[0]} \n")
-
-print(f"row.iloc[0, 1:]: {type(row.iloc[0, 1:])} \n {row.iloc[0, 1:]} \n")
-
-print(f"row.iloc[0, 1:].values: {type(row.iloc[0, 1:].values)} \n {row.iloc[0, 1:].values} \n")
+# # print(f"Rows for Albania:\n{row} \n")
+# print(f"row.columns[1:]: {type(row.columns[1:])} \n {row.columns[1:].astype(int)} \n")
 
 
-life_expectancy = row.iloc[0, 1:].values.astype(float)
+# print(f"row.iloc[0]: {type(row.iloc[0])} \n {row.iloc[0]} \n")
 
-print(f"row.iloc[0, 1:].values.astype(float): {type(life_expectancy)} \n {life_expectancy} \n")
+# print(f"row.iloc[0, 1:]: {type(row.iloc[0, 1:])} \n {row.iloc[0, 1:]} \n")
+
+# print(f"row.iloc[0, 1:].values: {type(row.iloc[0, 1:].values)} \n {row.iloc[0, 1:].values} \n")
+
+
+# life_expectancy = row.iloc[0, 1:].values.astype(float)
+
+# print(f"row.iloc[0, 1:].values.astype(float): {type(life_expectancy)} \n {life_expectancy} \n")
 
 #print(f"row.index: \n {row.index} \n")
 
@@ -51,3 +51,25 @@ print(f"row.iloc[0, 1:].values.astype(float): {type(life_expectancy)} \n {life_e
 # print(f"Values for 1805:\n{column}")
 # cols = [col for col in df.columns if col.startswith("18")]
 # print(f"Columns starting with '18': {cols}")
+     
+
+     ### MERGING DATAFRAMES ###
+data_1802 = df[["country", "1802"]]
+print(f"data_1802: type : {type(data_1802)} \n{data_1802}\n")
+data_1807 = df[["country", "1807"]]
+print(f"data_1807: type : {type(data_1807)} \n{data_1807}\n")
+
+inner_merged_data = pd.merge(data_1802, data_1807, on="country", how="inner", suffixes=("_1802", "_1807"))
+print(f"inner Merged Data:\n{inner_merged_data}\n")
+
+outer_merged_data = pd.merge(data_1802, data_1807, on="country", how="outer", suffixes=("_1802", "_1807"))
+print(f"outer Merged Data:\n{outer_merged_data}\n")
+
+left_merged_data = pd.merge(data_1802, data_1807, on="country", how="left", suffixes=("_1802", "_1807"))
+print(f"left Merged Data:\n{left_merged_data}\n")
+
+right_merged_data = pd.merge(data_1802, data_1807, on="country", how="right", suffixes=("_1802", "_1807"))
+print(f"right Merged Data:\n{right_merged_data}\n")
+
+data = inner_merged_data.dropna()
+print(f"Data after dropping NaN values:\n{data}\n")

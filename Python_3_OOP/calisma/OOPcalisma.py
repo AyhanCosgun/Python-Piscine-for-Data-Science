@@ -49,10 +49,11 @@ class Baratheon(Character):
         self.hairs = "dark"
 
 
-Arya = Stark("Arya")
-print(Arya)
+# Arya = Stark("Arya")
+# print(Arya)
 # print(Arya._Stark__private)
 # print(Arya.__private)
+# print(Arya.__dict__)
 
 
 ##MRO
@@ -78,3 +79,24 @@ class D(B, C):
 
 # print(D.mro())
 # print(D().who())
+
+
+class Base:
+    """Base class."""
+
+    def __init__(self):
+        """Initialize base secret."""
+        self.secret = "base"
+
+
+class Derived(Base):
+    """Derived class."""
+
+    def __init__(self):
+        """Initialize both secrets."""
+        super().__init__()
+        self.secret = "derived"
+
+
+obj = Derived()
+print(obj.__dict__)

@@ -1,4 +1,5 @@
 class calculator:
+    """A class that represents a calculator for vector-vector operations."""
     @staticmethod
     def dotproduct(V1: list[float], V2: list[float]) -> None:
         """Calculates the dot product of the given two vectors V1 and V2."""

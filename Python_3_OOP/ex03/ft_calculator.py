@@ -1,5 +1,5 @@
 class calculator:
-
+    """A class that represents a calculator for vector-scalar operations."""
     def __init__(self, vector: list):
         """Initializes a vector with properties of the class calculator."""
         self.vector = vector

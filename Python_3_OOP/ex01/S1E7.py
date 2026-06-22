@@ -17,9 +17,13 @@ class Baratheon(Character):
         super().die()
 
     def __str__(self):
+        """Overrides the default method __str__ to provide
+        an informal string representation of the Baratheon character."""
         return f"Vector: {self.family_name, self.eyes, self.hairs}"
 
     def __repr__(self):
+        """Overrides the default method __repr__ to provide
+        a formal string representation of the Baratheon character."""
         return self.__str__()
 
 
@@ -39,9 +43,13 @@ class Lannister(Character):
         super().die()
 
     def __str__(self):
+        """Overrides the default method __str__ to provide
+        an informal string representation of the Lannister character."""
         return f"Vector: {self.family_name, self.eyes, self.hairs}"
 
     def __repr__(self):
+        """Overrides the default method __repr__ to provide
+        a formal string representation of the Lannister character."""
         return self.__str__()
 
     @classmethod

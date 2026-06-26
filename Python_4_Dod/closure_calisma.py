@@ -4,18 +4,20 @@ def pow(x: int | float) -> int | float:
 
 def outer():
     x = 10
-
-    def inner():
-        nonlocal x
+    y = 20
+    def inner(yaz:str):
+        nonlocal x,y
         x = x + 1
+        print(yaz)
         return x
 
     return inner
 
 
 inner_func = outer()
-print(inner_func())  # Output: 11
-print(inner_func())  # Output: 12
-print(inner_func())  # Output: 13
-res = (-0.5) ** (-0.5)
-print(res)  # Output: 0.7071067811865476
+print(inner_func.__closure__)
+print(inner_func.__closure__[0].cell_contents)
+print(inner_func.__closure__[1].cell_contents)
+print(inner_func("ilk"))  # Output: 11
+print(inner_func("ikinci"))  # Output: 12
+print(inner_func("üçüncü"))  # Output: 13

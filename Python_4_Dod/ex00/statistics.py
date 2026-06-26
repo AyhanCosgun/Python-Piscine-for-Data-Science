@@ -18,7 +18,7 @@ def median_sorted(data: list) -> float:
 
 def quartiles(data: list) -> tuple[float, float]:
     """Calculates the first and third quartiles of a sorted list
-    according to Tukey's method."""
+    according to Tukey’s hinges/inclusive method."""
     n = len(data)
     mid = n // 2
 
@@ -36,7 +36,7 @@ def quartiles(data: list) -> tuple[float, float]:
 
 
 def ft_statistics(*args: Any, **kwargs: Any) -> None:
-    """Calculates and prints requested statistics
+    """Calculates and prints requested statistics given by keyword arguments
     based on provided positional arguments"""
     if not all(is_number(arg) for arg in args):
         print("ERROR: All positional arguments must be numbers.")

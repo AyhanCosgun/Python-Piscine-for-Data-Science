@@ -946,9 +946,9 @@ Bu, `inner` fonksiyonunun disaridan bir degeri closure olarak sakladigini goster
 
 Gundelik kodda `__closure__` kullanman gerekmez. Ama mekanizmayi anlamak icin faydalidir.
 
-## 4. Ex00'da key uydurmak normal mi, daha sik bir yol yok mu?
+## 4. Ex00'da key uydurmak normal mi, daha şık bir yol yok mu?
 
-### Normal uygulamada boyle tasarim cok sik degil
+### Normal uygulamada boyle tasarim cok şık degil
 
 Ex00'daki kullanim:
 
@@ -956,7 +956,7 @@ Ex00'daki kullanim:
 ft_statistics(1, 42, 360, 11, 64, toto="mean", tutu="median", tata="quartile")
 ```
 
-gercek projelerde cok sik tercih edilecek bir API tasarimi degildir.
+gercek projelerde cok şık tercih edilecek bir API tasarimi degildir.
 
 Cunku `toto`, `tutu`, `tata` gibi key'ler anlamsizdir. Fonksiyonun asil ilgilendigi sey key degil, value'dur:
 
@@ -968,7 +968,7 @@ Cunku `toto`, `tutu`, `tata` gibi key'ler anlamsizdir. Fonksiyonun asil ilgilend
 
 Bu tasarim, okunabilirlik acisindan zayiftir.
 
-### Daha sik bir tasarim nasil olurdu?
+### Daha şık bir tasarim nasil olurdu?
 
 Gercek bir projede sunlardan biri daha okunabilir olurdu.
 

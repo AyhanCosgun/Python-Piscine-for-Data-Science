@@ -13,4 +13,5 @@ def f(*args, **kwargs):
     print(f"mean : {mean}")
 
 
-f(1,8,4,7,4)
+values = (1, 2, 3)
+f(*values)

@@ -783,3 +783,493 @@ default_factory:
 __post_init__:
     Dataclass'ın otomatik __init__ işleminden sonra çalışan hook metodudur.
 ```
+
+## Sorulara Cevaplar
+
+### 1. "Alanlar type annotation ile yazılır: `name: str`" derken alan ne demek?
+
+Buradaki **alan** kelimesi İngilizcedeki **field** kelimesinin Türkçe karşılığıdır.
+
+Dataclass bağlamında alan şudur:
+
+```python
+@dataclass
+class Student:
+    name: str
+    surname: str
+    active: bool = True
+```
+
+Bu sınıfta:
+
+```text
+name
+surname
+active
+```
+
+birer dataclass alanıdır.
+
+Normal class terminolojisinde bunlara çoğu zaman **attribute** da deriz. Yani evet, dataclass'taki field/alan kavramı büyük ölçüde attribute kavramıyla ilişkilidir. Ama tamamen aynı şey gibi düşünmemek daha doğru olur.
+
+Normal bir sınıfta attribute genelde şöyle oluşur:
+
+```python
+class Student:
+    def __init__(self, name):
+        self.name = name
+```
+
+Burada `self.name` bir instance attribute'tur.
+
+Dataclass'ta ise attribute'ları sınıfın başında bildirirsin:
+
+```python
+@dataclass
+class Student:
+    name: str
+```
+
+Dataclass bu bildirime bakarak otomatik `__init__` üretir. Yani şunu sen yazmamış olsan bile dataclass yaklaşık olarak senin yerine yazar:
+
+```python
+def __init__(self, name: str):
+    self.name = name
+```
+
+Bu yüzden dataclass'ta "alan" dediğimiz şey:
+
+```text
+Dataclass'ın okuyup __init__, __repr__, __eq__ gibi metodları üretirken kullandığı tanımlı attribute bilgisi.
+```
+
+Yani:
+
+```python
+name: str
+```
+
+şu bilgileri verir:
+
+```text
+Bu sınıfta name adlı bir alan var.
+Bu alanın beklenen tipi str.
+Bu alan __init__ içine parametre olarak girsin.
+Bu alan repr çıktısında görünsün.
+Bu alan karşılaştırmalarda kullanılsın.
+```
+
+Tabii bu davranışların bazıları `field()` ile değiştirilebilir.
+
+`field` kelimesinin bununla alakası var mı?
+
+Evet, doğrudan alakası var. `field()` fonksiyonu, dataclass alanının ayarlarını detaylandırmak için kullanılır.
+
+Mesela:
+
+```python
+login: str = field(init=False)
+```
+
+Burada `login` yine bir dataclass alanıdır. Ama `field(init=False)` diyerek bu alanın otomatik `__init__` içine girmemesini söylüyoruz.
+
+Yani:
+
+```python
+name: str
+```
+
+basit alan tanımıdır.
+
+```python
+login: str = field(init=False)
+```
+
+özel ayarlı alan tanımıdır.
+
+Kısaca:
+
+```text
+attribute:
+    Nesnenin üzerinde bulunan değer.
+
+dataclass field / alan:
+    Dataclass'ın özel olarak tanıdığı, type annotation ile bildirilen attribute tanımı.
+
+field():
+    Bu dataclass alanının davranışını ayarlayan yardımcı fonksiyon.
+```
+
+### 2. `default_factory=generate_id` normal sınıfta her nesne için id üretmek gibi mi çalışıyor?
+
+Evet, mantık olarak çok benzer.
+
+Normal bir sınıfta şöyle yazabilirdin:
+
+```python
+class Student:
+    def __init__(self, name: str, surname: str):
+        self.name = name
+        self.surname = surname
+        self.id = generate_id()
+```
+
+Burada her yeni `Student` nesnesi oluşturulduğunda `__init__` çalışır ve:
+
+```python
+self.id = generate_id()
+```
+
+satırı sayesinde yeni bir id üretilir.
+
+Dataclass'taki şu kullanım:
+
+```python
+id: str = field(default_factory=generate_id, init=False)
+```
+
+buna benzer bir iş yapar.
+
+Şu anlama gelir:
+
+```text
+Bu alanın değerini oluştururken generate_id fonksiyonunu çağır.
+Ama id alanını __init__ parametresi olarak kullanıcıdan alma.
+```
+
+Yaklaşık zihinsel karşılığı:
+
+```python
+def __init__(self, name, surname, active=True):
+    self.name = name
+    self.surname = surname
+    self.active = active
+    self.id = generate_id()
+```
+
+Burada çok önemli bir detay var:
+
+```python
+default_factory=generate_id
+```
+
+yazıyoruz.
+
+Şunu yazmıyoruz:
+
+```python
+default_factory=generate_id()
+```
+
+Çünkü `default_factory` fonksiyonun kendisini ister. Dataclass o fonksiyonu nesne oluşturulurken kendisi çağırır.
+
+Amaç id için uniqueness mi?
+
+Bu egzersizde amaç öncelikle şudur:
+
+```text
+Her Student nesnesine otomatik ve random bir id vermek.
+```
+
+Bu random id pratikte "unique olsun" niyetiyle kullanılıyor gibi düşünülebilir. Ama teknik olarak bu fonksiyon uniqueness garantisi vermez.
+
+Çünkü:
+
+```python
+random.choices(string.ascii_lowercase, k=15)
+```
+
+random seçim yapar. Teorik olarak aynı 15 harfli string iki farklı öğrenciye denk gelebilir. İhtimal çok düşüktür, ama sıfır değildir.
+
+Yani doğru ifade:
+
+```text
+generate_id random id üretir.
+Bu id'nin çakışma ihtimali düşüktür.
+Ama bu kod uniqueness garantisi vermez.
+```
+
+Gerçek bir sistemde kesin unique id istiyorsan genelde şunlar kullanılır:
+
+```python
+uuid.uuid4()
+```
+
+veya veritabanı unique constraint gibi mekanizmalar.
+
+Ama subject sadece `random` ve `string` kullanımına izin verdiği için bu egzersizde verilen `generate_id()` fonksiyonu kullanılmalı.
+
+### 3. `random.choices` normalde liste mi dönüyor? O yüzden mi `.join` kullanıyoruz?
+
+Evet.
+
+`random.choices(...)` bir **list** döndürür.
+
+Örnek:
+
+```python
+import random
+import string
+
+result = random.choices(string.ascii_lowercase, k=5)
+print(result)
+```
+
+Olası çıktı:
+
+```text
+['a', 'q', 'm', 'z', 'b']
+```
+
+Bu bir string değildir, listedir.
+
+Ama bizim istediğimiz id şu şekilde bir string:
+
+```text
+aqmzb
+```
+
+Bu yüzden `join` kullanıyoruz:
+
+```python
+"".join(['a', 'q', 'm', 'z', 'b'])
+```
+
+Sonuç:
+
+```python
+"aqmzb"
+```
+
+Subject'teki kullanım:
+
+```python
+"".join(random.choices(string.ascii_lowercase, k=15))
+```
+
+şöyle okunabilir:
+
+```text
+Küçük harflerden 15 tanesini liste olarak seç.
+Sonra bu listedeki karakterleri araya boşluk koymadan birleştir.
+```
+
+Eğer `"".join(...)` yerine `"-".join(...)` kullansaydın:
+
+```python
+"-".join(["a", "q", "m"])
+```
+
+sonuç şu olurdu:
+
+```python
+"a-q-m"
+```
+
+Ama id için araya karakter koymak istemiyoruz. O yüzden ayırıcı olarak boş string kullanıyoruz:
+
+```python
+""
+```
+
+Ek not: `random.choice(...)` ve `random.choices(...)` farklıdır.
+
+```python
+random.choice(string.ascii_lowercase)
+```
+
+tek bir eleman döndürür:
+
+```python
+"a"
+```
+
+Ama:
+
+```python
+random.choices(string.ascii_lowercase, k=5)
+```
+
+liste döndürür:
+
+```python
+["a", "q", "m", "z", "b"]
+```
+
+Bu yüzden `choices` sonucunu string yapmak için `join` mantıklı bir çözümdür.
+
+### 4. "Hook metodu" ne demek?
+
+Hook metodu, bir sistemin veya framework'ün belirli bir anda otomatik olarak çağırdığı, senin de o ana özel davranış eklemek için tanımladığın metoddur.
+
+Kelime anlamıyla "hook", bir yere tutunma noktası gibi düşünülebilir.
+
+Programlama açısından:
+
+```text
+Sistem bir akış yürütür.
+Bu akışın belirli noktalarında sana özel kod yazabilmen için bazı metod adları tanımlar.
+Sen o metodları yazarsan, sistem doğru zamanda onları çağırır.
+```
+
+Dataclass'ta:
+
+```python
+def __post_init__(self):
+    ...
+```
+
+bir hook metodudur.
+
+Çünkü dataclass otomatik `__init__` çalıştıktan sonra bu metod var mı diye bakar. Varsa çağırır.
+
+Sen doğrudan şunu yazmazsın:
+
+```python
+student.__post_init__()
+```
+
+Normal kullanımda dataclass senin yerine çağırır.
+
+Örnek:
+
+```python
+@dataclass
+class Student:
+    name: str
+    surname: str
+    login: str = field(init=False)
+
+    def __post_init__(self):
+        self.login = self.name[0] + self.surname
+```
+
+Akış:
+
+```text
+Student(...) çağrılır.
+Dataclass'ın ürettiği __init__ çalışır.
+name ve surname atanır.
+Sonra dataclass __post_init__ metodunu otomatik çağırır.
+login hesaplanır.
+```
+
+Bilmen gereken bazı hook benzeri metodlara örnekler:
+
+### `__init__`
+
+Python nesne oluşturulurken çağırır.
+
+```python
+class User:
+    def __init__(self, name):
+        self.name = name
+```
+
+`__init__`, genel Python sınıflarında kullanılan çok temel bir hook gibi düşünülebilir. Nesne initialize edilirken otomatik çağrılır.
+
+### `__post_init__`
+
+Dataclass'a özgüdür.
+
+```python
+@dataclass
+class User:
+    name: str
+
+    def __post_init__(self):
+        self.name = self.name.strip()
+```
+
+Dataclass'ın otomatik `__init__` işleminden sonra çağrılır.
+
+### `__str__`
+
+Nesne `str(obj)` ile string'e çevrilirken veya `print(obj)` sırasında çağrılır.
+
+```python
+class User:
+    def __str__(self):
+        return "User object"
+```
+
+Bu egzersizde subject özellikle `__str__` yazmamayı söylüyor.
+
+### `__repr__`
+
+Nesnenin geliştiriciye yönelik temsili gerektiğinde çağrılır.
+
+```python
+class User:
+    def __repr__(self):
+        return "User(...)"
+```
+
+Dataclass bunu otomatik üretir. Bu egzersizde manuel yazılmamalı.
+
+### `__len__`
+
+`len(obj)` çağrıldığında çalışır.
+
+```python
+class Team:
+    def __init__(self):
+        self.members = []
+
+    def __len__(self):
+        return len(self.members)
+```
+
+### `__enter__` ve `__exit__`
+
+`with` bloğuna girerken ve çıkarken çağrılır.
+
+```python
+class Resource:
+    def __enter__(self):
+        print("kaynak açıldı")
+        return self
+
+    def __exit__(self, exc_type, exc, traceback):
+        print("kaynak kapandı")
+```
+
+Kullanım:
+
+```python
+with Resource() as resource:
+    print("içerideyim")
+```
+
+### `setUp` ve `tearDown`
+
+Python'un `unittest` framework'ünde testlerden önce ve sonra çağrılan hook metodlarıdır.
+
+```python
+import unittest
+
+
+class MyTest(unittest.TestCase):
+    def setUp(self):
+        print("Her testten önce çalışır")
+
+    def tearDown(self):
+        print("Her testten sonra çalışır")
+```
+
+Burada `setUp` ve `tearDown` Python dilinin magic method'u değildir, ama `unittest` framework'ünün tanıdığı hook metodlarıdır.
+
+Kısa özet:
+
+```text
+Hook metodu:
+    Senin doğrudan çağırmadığın,
+    ama Python'un, dataclass'ın veya bir framework'ün
+    belirli bir anda otomatik çağırdığı özel metod.
+```
+
+Bu yüzden `__post_init__` için en doğru cümle şu olur:
+
+```text
+__post_init__, dataclass'ın otomatik __init__ işleminden sonra çağırdığı dataclass hook metodudur.
+```

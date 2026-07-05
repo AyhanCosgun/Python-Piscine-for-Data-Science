@@ -41,6 +41,9 @@ def ft_statistics(*args: Any, **kwargs: Any) -> None:
     if not all(is_number(arg) for arg in args):
         print("ERROR: All positional arguments must be numbers.")
         return
+    if not all(isinstance(request, str) for request in kwargs.values()):
+        print("ERROR: All keyword arguments must be strings.")
+        return
     arg_len = len(args)
     if arg_len == 0:
         occurance = len([request for request in kwargs.values()
@@ -63,7 +66,7 @@ def ft_statistics(*args: Any, **kwargs: Any) -> None:
             print(f"quartile : [{Q1:.1f}, {Q3:.1f}]")
         elif request.lower() == "var":
             variance = sum((x - mean) ** 2 for x in args) / arg_len
-            print(f"variance : {variance}")
+            print(f"var : {variance}")
         elif request.lower() == "std":
             variance = sum((x - mean) ** 2 for x in args) / arg_len
             std_dev = variance ** 0.5
